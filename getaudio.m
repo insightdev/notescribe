@@ -1,8 +1,15 @@
 function [y,Fs,load] = getaudio
 
 choice = questdlg('Load or new recording?', ...
-	'Notescribe - select an option', ...
-	'Load audio file', 'New Recording', 'New Recording');
+    'Notescribe - select an option', ...
+    'Load audio file', 'New Recording', 'New Recording');
+
+if isempty(choice)
+    y = [];
+    Fs = 0;
+    load = -1;
+    return
+end
 
 switch choice
     case 'Load audio file'
@@ -23,7 +30,7 @@ if load == 1
     '*.wav','Lossless Wave (*.wav)'
     }, ... 
     'Pick an audio file');
-    
+
     [y, Fs] = audioread(strcat(pathname,filename));
 else
     Fs = 44100;
