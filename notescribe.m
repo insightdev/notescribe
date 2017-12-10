@@ -29,3 +29,20 @@ HI = 1200;
 [~,idx] = max(short_v);
 main_freq = uint64(short_r(idx))
 msgbox(['The highest frequency is ' num2str(main_freq) ' Hz'], 'Result')
+
+% Time to employ a rule-based classifier
+
+%{
+
+playable notes
+low: 80 Hz
+high: 1200 Hz
+
+
+E	329.63 Hz	E4
+B	246.94 Hz	B3
+G	196.00 Hz	G3
+D	146.83 Hz	D3
+A	110.00 Hz	A2
+E	82.41 Hz	E2
+%}
