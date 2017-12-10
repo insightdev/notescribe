@@ -21,3 +21,8 @@ monoy = simplesig2mono(y);
 N = length(monoy)-1;
 
 [fft_v, freq_range, freq_step] = execute_fft(monoy, N, Fs);
+
+LO = 80;
+HI = 1200;
+
+[short_v, short_r] = shorten_fft(fft_v, freq_range, LO, HI, freq_step);
