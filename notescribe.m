@@ -18,3 +18,6 @@ elseif load == 0
 end
 
 monoy = simplesig2mono(y);
+N = length(monoy)-1;
+
+[fft_v, freq_range, freq_step] = execute_fft(monoy, N, Fs);
