@@ -16,3 +16,5 @@ elseif load == 0
         audiowrite(filename{1,1},y,Fs);
     end
 end
+
+monoy = simplesig2mono(y);
