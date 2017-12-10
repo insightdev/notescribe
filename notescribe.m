@@ -26,3 +26,6 @@ LO = 80;
 HI = 1200;
 
 [short_v, short_r] = shorten_fft(fft_v, freq_range, LO, HI, freq_step);
+[~,idx] = max(short_v);
+main_freq = uint64(short_r(idx))
+msgbox(['The highest frequency is ' num2str(main_freq) ' Hz'], 'Result')
