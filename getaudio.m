@@ -31,11 +31,23 @@ if load == 1
     }, ... 
     'Pick an audio file');
 
+    if filename == 0
+        disp('User cancelled.');
+        return
+    end
     [y, Fs] = audioread(strcat(pathname,filename));
 else
     Fs = 44100;
     rec = audiorecorder(Fs, 16, 1);
     seconds = inputdlg('How many seconds of audio?','Record');
+    
+    if isempty(seconds)
+        load = -1;
+        Fs = 0;
+        y = [];
+        return
+    end
+    
     recordblocking(rec, str2double(seconds{1,1}));
     y = getaudiodata(rec);
 end
