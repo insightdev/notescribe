@@ -19,6 +19,24 @@ end
 monoy = simplesig2mono(y);
 N = length(monoy)-1;
 
+% Remove the amp hum by adding to a phase inverted amp frequency signal (generated)
+
+%{
+    To work with multiple notes, split the audio signal into parts.
+
+    when a string is picked, the amplitude peaks above a certain value
+    therefore, split the audio whenever the amplitude (value in signal vector) goes above said threshold
+    the final result could be a matrix where each row is one note, increasing columns mean change in values over time
+
+
+    pseudocode:
+    matrix [rows, columns]
+
+    loop through rows of mono signal and add columns to a row
+    when the signal is above a threshold, move to next row and add columns to the next row
+    etc.
+%}
+
 [fft_v, freq_range, freq_step] = execute_fft(monoy, N, Fs);
 
 LO = 80;
