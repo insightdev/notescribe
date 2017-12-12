@@ -32,7 +32,9 @@ if load == 1
     'Pick an audio file');
 
     if filename == 0
-        disp('User cancelled.');
+        y = [];
+        Fs = 0;
+        load = -1;
         return
     end
     [y, Fs] = audioread(strcat(pathname,filename));
