@@ -26,10 +26,13 @@ HI = 1200;
 
 [short_v, short_r] = shorten_fft(fft_v, freq_range, LO, HI, freq_step);
 [~,idx] = max(short_v);
-main_freq = uint64(short_r(idx))
-msgbox(['The highest frequency is ' num2str(main_freq) ' Hz'], 'Result')
+main_freq = uint64(short_r(idx));
 
-% Time to employ a rule-based classifier
+% a good tolerance for a guitar is ±2.8 percent
+tolerance = 0.028;
+note = classify_note(main_freq,tolerance);
+msgbox(['Note detected: ' num2str(note)], 'Result')
+
 
 %{
 
