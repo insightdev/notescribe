@@ -43,6 +43,15 @@ else
         throw(ME);
     end
     
+    startrecord = questdlg(...
+        sprintf('Press record to start recording (%s sec.)', seconds{1,1}), ...
+        'Start', ...
+        'Record', 'Cancel', 'Record');
+    
+    if startrecord ~= 'Record'
+        throw(ME)
+    end
+    
     recordblocking(rec, str2double(seconds{1,1}));
     y = getaudiodata(rec);
     
