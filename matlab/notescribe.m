@@ -1,7 +1,11 @@
 clear
 
 % load constants from config file
-[LO, HI, TOLERANCE, FRACTION, THRESHOLD_MULTIPLIER] = notescribe_config;
+[...
+LO, HI, TOLERANCE, ...
+FRACTION, ...
+THRESHOLD_MULTIPLIER ...
+] = notescribe_config;
 
 % declare variables
 detected_freqs = [];
@@ -24,8 +28,9 @@ try
         if mean(abs(piece)) > threshold
             [fft_v, freq_range, freq_step] = execute_fft(piece, N, Fs);
             [short_v, short_r] = shorten_fft(fft_v, freq_range, ...
-                                                LO, HI, freq_step);
-            [~,idx] = max(short_v);
+                                                LO, HI, ...
+                                                freq_step);
+            [~, idx] = max(short_v);
             main_freq = uint64(short_r(idx));
 
             if isempty(detected_freqs)
@@ -46,7 +51,7 @@ try
     clear piece pieces npieces; %remove cut up audio info
 
     for i = 1:length(detected_freqs)
-        note = classify_note(detected_freqs(i),TOLERANCE);
+        note = classify_note(detected_freqs(i), TOLERANCE);
         if ~isempty(note)
             if notes(1) == ""
                 notes(1) = note;
@@ -59,10 +64,15 @@ try
     % clean up memory
     clear note i;
     
-    if notes==""
-        msgbox('No notes found', 'Nothing');
+    if notes == ""
+        msgbox(...
+            'No notes found', ...
+            'Nothing');
     else
-        msgbox({'Notes found:' sprintf('\n%s',notes{:})},...
+        msgbox(...
+            {'Notes found:' ...
+                sprintf('\n%s', notes{:}) ...
+            }, ...
             'Success!');
     end
 catch ME
