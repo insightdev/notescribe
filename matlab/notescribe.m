@@ -37,6 +37,13 @@ try
             end
         end
     end
+    
+    % Clean up memory
+    clear i pos idx;            %remove iterator vars
+    clear y Fs N;               %remove original signal info
+                                %remove fft info
+    clear fft_v freq_range freq_step fft_r short_r short_v main_freq;
+    clear piece pieces npieces; %remove cut up audio info
 
     for i = 1:length(detected_freqs)
         note = classify_note(detected_freqs(i),TOLERANCE);
@@ -49,8 +56,11 @@ try
         end 
     end
 
+    % clean up memory
+    clear note i;
+    
     if notes==""
-        msgbox("No notes found", "Crap");
+        msgbox('No notes found', 'Nothing');
     else
         msgbox({'Notes found:' sprintf('\n%s',notes{:})},...
             'Success!');
