@@ -1,68 +1,61 @@
-[y,Fs,load] = getaudio;
+clear
 
-if load == -1
-    disp('User cancelled.');
-    return
-elseif load == 0
-    savefile = questdlg('Would you like to save the file?', ...
-        'Save file?', ...
-        'Yes', 'No', 'No');
-    switch savefile
-        case 'Yes'
-            filename = inputdlg('What is the path?','Path');
-            audiowrite(filename{1,1},y,Fs);
-        case 'No'
-            waitfor(msgbox('Not saving file','Save cancelled'));
-    end 
+% load constants from config file
+[LO, HI, TOLERANCE, FRACTION, THRESHOLD_MULTIPLIER] = notescribe_config;
+
+% declare variables
+detected_freqs = [];
+notes = strings(1);
+
+try
+    [y,Fs] = getaudio;
+
+    monoy = lossymono(y);
+    N = length(monoy)-1;
+
+    pieces = splitaudio(monoy, Fs, FRACTION);
+    [~, npieces] = size(pieces);
+    
+    threshold = calculate_threshold(pieces, THRESHOLD_MULTIPLIER);
+    
+    pos = 1;
+    for i = 1:npieces
+        piece = pieces(:,i);
+        if mean(abs(piece)) > threshold
+            [fft_v, freq_range, freq_step] = execute_fft(piece, N, Fs);
+            [short_v, short_r] = shorten_fft(fft_v, freq_range, ...
+                                                LO, HI, freq_step);
+            [~,idx] = max(short_v);
+            main_freq = uint64(short_r(idx));
+
+            if isempty(detected_freqs)
+                detected_freqs(pos) = main_freq;
+                pos = pos+1;
+            elseif detected_freqs(pos-1) ~= main_freq
+                detected_freqs(pos) = main_freq;
+                pos = pos+1;
+            end
+        end
+    end
+
+    for i = 1:length(detected_freqs)
+        note = classify_note(detected_freqs(i),TOLERANCE);
+        if ~isempty(note)
+            if notes(1) == ""
+                notes(1) = note;
+            elseif notes(length(notes)) ~= note
+                notes(length(notes)+1) = note;
+            end        
+        end 
+    end
+
+    if notes==""
+        msgbox("No notes found", "Crap");
+    else
+        msgbox({'Notes found:' sprintf('\n%s',notes{:})},...
+            'Success!');
+    end
+catch ME
+    waitfor(msgbox({ME.identifier;ME.message;},'Error'));
+    clear
 end
-
-monoy = simplesig2mono(y);
-N = length(monoy)-1;
-
-% Remove the amp hum by adding to a phase inverted amp frequency signal (generated)
-
-%{
-    To work with multiple notes, split the audio signal into parts.
-
-    when a string is picked, the amplitude peaks above a certain value
-    therefore, split the audio whenever the amplitude (value in signal vector) goes above said threshold
-    the final result could be a matrix where each row is one note, increasing columns mean change in values over time
-
-
-    pseudocode:
-    matrix [rows, columns]
-
-    loop through rows of mono signal and add columns to a row
-    when the signal is above a threshold, move to next row and add columns to the next row
-    etc.
-%}
-
-[fft_v, freq_range, freq_step] = execute_fft(monoy, N, Fs);
-
-LO = 80;
-HI = 1200;
-
-[short_v, short_r] = shorten_fft(fft_v, freq_range, LO, HI, freq_step);
-[~,idx] = max(short_v);
-main_freq = uint64(short_r(idx));
-
-% a good tolerance for a guitar is ±2.8 percent
-tolerance = 0.028;
-note = classify_note(main_freq,tolerance);
-msgbox(['Note detected: ' num2str(note)], 'Result')
-
-
-%{
-
-playable notes
-low: 80 Hz
-high: 1200 Hz
-
-
-E	329.63 Hz	E4
-B	246.94 Hz	B3
-G	196.00 Hz	G3
-D	146.83 Hz	D3
-A	110.00 Hz	A2
-E	82.41 Hz	E2
-%}

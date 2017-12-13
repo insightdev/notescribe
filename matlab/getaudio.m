@@ -1,14 +1,13 @@
-function [y,Fs,load] = getaudio
-
+function [y,Fs] = getaudio
+ME = MException('Notescribe:Getaudio:UserCancelled', ...
+        'User cancelled');
+    
 choice = questdlg('Load or new recording?', ...
     'Notescribe - select an option', ...
     'Load audio file', 'New Recording', 'New Recording');
 
 if isempty(choice)
-    y = [];
-    Fs = 0;
-    load = -1;
-    return
+    throw(ME)
 end
 
 switch choice
@@ -32,10 +31,7 @@ if load == 1
     'Pick an audio file');
 
     if filename == 0
-        y = [];
-        Fs = 0;
-        load = -1;
-        return
+        throw(ME);
     end
     [y, Fs] = audioread(strcat(pathname,filename));
 else
@@ -44,12 +40,26 @@ else
     seconds = inputdlg('How many seconds of audio?','Record');
     
     if isempty(seconds)
-        load = -1;
-        Fs = 0;
-        y = [];
-        return
+        throw(ME);
     end
     
     recordblocking(rec, str2double(seconds{1,1}));
     y = getaudiodata(rec);
+    
+    savefile = questdlg('Would you like to save the file?', ...
+        'Save file?', ...
+        'Yes', 'No', 'No');
+    switch savefile
+        case 'Yes'
+            filename = inputdlg('What is the path?','Path');
+            
+            if isempty(filename)
+                throw(ME)
+            else
+                audiowrite(filename{1,1},y,Fs);
+            end
+     
+        case 'No'
+            waitfor(msgbox('Not saving file','Save cancelled'));
+    end 
 end
