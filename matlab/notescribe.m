@@ -8,7 +8,7 @@ THRESHOLD_MULTIPLIER ...
 ] = notescribe_config;
 
 % declare variables
-detected_freqs = [];
+detected_freqs = zeros(1,1);
 notes = strings(1);
 
 try
@@ -33,7 +33,7 @@ try
             [~, idx] = max(short_v);
             main_freq = uint64(short_r(idx));
 
-            if isempty(detected_freqs)
+            if detected_freqs(length(detected_freqs)) == 0
                 detected_freqs(pos) = main_freq;
                 pos = pos+1;
             elseif detected_freqs(pos-1) ~= main_freq
