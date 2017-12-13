@@ -58,8 +58,5 @@ else
             else
                 audiowrite(filename{1,1},y,Fs);
             end
-     
-        case 'No'
-            waitfor(msgbox('Not saving file','Save cancelled'));
     end 
 end
