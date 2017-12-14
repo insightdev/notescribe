@@ -45,7 +45,7 @@ try
     
     % Clean up memory
     clear i pos idx;            %remove iterator vars
-    clear y Fs N;               %remove original signal info
+    clear N;                    %remove original signal info
                                 %remove fft info
     clear fft_v freq_range freq_step fft_r short_r short_v main_freq;
     clear piece pieces npieces; %remove cut up audio info
