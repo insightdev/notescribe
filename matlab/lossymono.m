@@ -1,2 +1,5 @@
 function [m] = lossymono(s)
-m = s(:,1);
+inf = size(s)
+if inf(2) == 2
+    m = s(:,1);
+end
