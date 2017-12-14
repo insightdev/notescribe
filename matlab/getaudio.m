@@ -38,6 +38,7 @@ if load == 1
     end
     
     [y, Fs] = audioread(strcat(pathname,filename));
+    y = lossymono(y);
 else
     Fs = 44100;
     rec = audiorecorder(Fs, 16, 1);

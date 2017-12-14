@@ -13,11 +13,10 @@ notes = strings(1);
 
 try
     [y,Fs] = getaudio;
+    
+    N = length(y)-1;
 
-    monoy = lossymono(y);
-    N = length(monoy)-1;
-
-    pieces = splitaudio(monoy, Fs, FRACTION);
+    pieces = splitaudio(y, Fs, FRACTION);
     [~, npieces] = size(pieces);
     
     threshold = calculate_threshold(pieces, THRESHOLD_MULTIPLIER);
