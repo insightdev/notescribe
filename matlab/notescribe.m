@@ -14,7 +14,7 @@ notes = strings(1);
 try
     [y,Fs] = getaudio;
     
-    N = length(y)-1;
+    N = length(y);
 
     pieces = splitaudio(y, Fs, FRACTION);
     [~, npieces] = size(pieces);
@@ -43,11 +43,7 @@ try
     end
     
     % Clean up memory
-    clear i pos idx;            %remove iterator vars
-    clear N;                    %remove original signal info
-                                %remove fft info
     clear fft_v freq_range freq_step fft_r short_r short_v main_freq;
-    clear piece pieces npieces; %remove cut up audio info
 
     for i = 1:length(detected_freqs)
         note = classify_note(detected_freqs(i), TOLERANCE);

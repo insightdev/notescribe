@@ -1,6 +1,6 @@
 function [audiocols] = splitaudio(signal, Fs, fraction)
 
-N = length(signal)-1;
+N = length(signal);
 counter = 1;
 col = 1;
 audiocols = [];
