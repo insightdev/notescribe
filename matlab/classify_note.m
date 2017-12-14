@@ -1,7 +1,12 @@
+% Rule-based classifier for note classification based on a frequency.
 function [note_str] = classify_note(freq, tol)
 
-% tol is the variance in the note that is allowed, in percent
-% if it is outside the tolerated value, the note changes
+% tol is the variance in the note that is allowed, in percent.
+% If the frequency  is outside the tolerated value, the note changes to
+% the next frequency band.
+
+% Very simple rule-based classifier.
+% Frequency bands are universal for guitars.
 
 if noterange(0,80,tol)<freq && freq<noterange(1,80,tol)
 	note_str = "E2";

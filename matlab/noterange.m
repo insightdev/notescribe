@@ -1,3 +1,5 @@
+% Create a lower or upper bound for a given frequency
+% based on a preconfigured tolerance.
 function [bound] = noterange(hl, freq, tol)
 
 switch hl
